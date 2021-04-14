@@ -142,6 +142,7 @@ class SendConfigDialog(QDialog):
         self.leFullTopic = QLineEdit()
         self.leFullTopic.setText('%prefix%/%topic%/')
         self.leFriendlyName = QLineEdit()
+        self.leMQTTClientID = QLineEdit()
         self.leMQTTUser = QLineEdit()
         self.leMQTTPass = QLineEdit()
         self.leMQTTPass.setEchoMode(QLineEdit.Password)
@@ -151,6 +152,7 @@ class SendConfigDialog(QDialog):
         flMQTT.addRow('Topic', self.leTopic)
         flMQTT.addRow('FullTopic', self.leFullTopic)
         flMQTT.addRow('FriendlyName', self.leFriendlyName)
+        flMQTT.addRow('ClientID [optional]', self.leMQTTClientID)
         flMQTT.addRow('User [optional]', self.leMQTTUser)
         flMQTT.addRow('Password [optional]', self.leMQTTPass)
         self.gbMQTT.setLayout(flMQTT)
@@ -207,6 +209,7 @@ class SendConfigDialog(QDialog):
         self.leTopic.setText(self.settings.value('Topic', 'tasmota'))
         self.leFullTopic.setText(self.settings.value('FullTopic', '%prefix%/%topic%/'))
         self.leFriendlyName.setText(self.settings.value('FriendlyName'))
+        self.leMQTTClientID.setText(self.settings.value('MQTTClientID'))
         self.leMQTTUser.setText(self.settings.value('MQTTUser'))
 
         self.gbModule.setChecked(self.settings.value('gbModule', False, bool))
@@ -262,6 +265,10 @@ class SendConfigDialog(QDialog):
                 fname = self.leFriendlyName.text()
                 if fname:
                     backlog.append('friendlyname {}'.format(fname))
+
+                mqttclient = self.leMQTTClientID.text()
+                if mqttclient:
+                    backlog.append('mqttclient {}'.format(mqttclient))    
 
                 mqttuser = self.leMQTTUser.text()
                 if mqttuser:
@@ -714,6 +721,7 @@ class Tasmotizer(QDialog):
                     self.settings.setValue('Topic', dlg.leTopic.text())
                     self.settings.setValue('FullTopic', dlg.leFullTopic.text())
                     self.settings.setValue('FriendlyName', dlg.leFriendlyName.text())
+                    self.settings.setValue('MQTTClientID', dlg.leMQTTClientID.text())
                     self.settings.setValue('MQTTUser', dlg.leMQTTUser.text())
 
                     self.settings.setValue('gbModule', dlg.gbModule.isChecked())
